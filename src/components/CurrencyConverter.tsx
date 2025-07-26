@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, Calculator, Download } from 'lucide-react';
+import { ArrowUpDown, Calculator, Download, Eye, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface CurrencyConverterProps {
@@ -20,6 +20,8 @@ interface CurrencyConverterProps {
 export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConverterProps) => {
   const [nairaAmount, setNairaAmount] = useState('');
   const [foreignAmount, setForeignAmount] = useState('');
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewCanvas, setPreviewCanvas] = useState<HTMLCanvasElement | null>(null);
 
   const formatNumber = (value: number) => {
     return new Intl.NumberFormat('en-NG', {
@@ -55,9 +57,9 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
     setForeignAmount(tempNaira);
   };
 
-  const generateConversionCard = () => {
+  const generatePreview = () => {
     if (!nairaAmount || !foreignAmount) {
-      toast.error("Please enter amounts to convert before downloading");
+      toast.error("Please enter amounts to convert before previewing");
       return;
     }
 
@@ -65,73 +67,112 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Card dimensions
-    canvas.width = 600;
-    canvas.height = 400;
+    // Enhanced card dimensions for better proportions
+    canvas.width = 800;
+    canvas.height = 500;
 
-    // Background gradient (emerald theme)
-    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    gradient.addColorStop(0, '#064e3b'); // emerald-900
-    gradient.addColorStop(0.5, '#065f46'); // emerald-800
-    gradient.addColorStop(1, '#047857'); // emerald-700
+    // Premium gradient background
+    const gradient = ctx.createRadialGradient(
+      canvas.width / 2, canvas.height / 2, 0,
+      canvas.width / 2, canvas.height / 2, canvas.width / 2
+    );
+    gradient.addColorStop(0, '#064e3b');
+    gradient.addColorStop(0.4, '#065f46');
+    gradient.addColorStop(0.8, '#047857');
+    gradient.addColorStop(1, '#022c22');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Glass effect overlay
-    const glassGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    glassGradient.addColorStop(0, 'rgba(255, 255, 255, 0.1)');
-    glassGradient.addColorStop(1, 'rgba(255, 255, 255, 0.05)');
-    ctx.fillStyle = glassGradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Decorative elements - top corner pattern
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+    for (let i = 0; i < 50; i++) {
+      ctx.beginPath();
+      ctx.arc(Math.random() * canvas.width, Math.random() * 100, Math.random() * 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
-    // Border
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    // Glass morphism card overlay
+    const cardPadding = 40;
+    const cardX = cardPadding;
+    const cardY = cardPadding;
+    const cardWidth = canvas.width - (cardPadding * 2);
+    const cardHeight = canvas.height - (cardPadding * 2);
 
-    // Title
+    // Card background with rounded corners effect
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.fillRect(cardX, cardY, cardWidth, cardHeight);
+
+    // Card border with gradient
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(cardX, cardY, cardWidth, cardHeight);
+
+    // Inner glow effect
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(cardX + 2, cardY + 2, cardWidth - 4, cardHeight - 4);
+
+    // Header section
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 24px Arial';
+    ctx.font = 'bold 36px serif';
     ctx.textAlign = 'center';
-    ctx.fillText('Currency Conversion', canvas.width / 2, 50);
+    ctx.fillText('CURRENCY CONVERSION', canvas.width / 2, 120);
 
-    // Flag and currency name
-    ctx.font = '18px Arial';
-    ctx.fillText(`${currency.flag} ${currency.name}`, canvas.width / 2, 80);
+    // Subtitle with elegant styling
+    ctx.font = '20px serif';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+    ctx.fillText(`${currency.flag} ${currency.name}`, canvas.width / 2, 150);
 
-    // Conversion amounts
-    ctx.font = 'bold 32px Arial';
-    ctx.fillStyle = '#10b981'; // emerald-500
-    ctx.fillText(`₦${formatNumber(Number(nairaAmount))}`, canvas.width / 2, 140);
+    // Decorative line
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(canvas.width / 2 - 100, 170);
+    ctx.lineTo(canvas.width / 2 + 100, 170);
+    ctx.stroke();
 
-    // Arrow
-    ctx.font = '24px Arial';
+    // Amount display with beautiful typography
+    ctx.font = 'bold 42px serif';
+    ctx.fillStyle = '#10b981';
+    const nairaText = `₦${formatNumber(Number(nairaAmount))}`;
+    ctx.fillText(nairaText, canvas.width / 2, 240);
+
+    // Conversion arrow with styling
+    ctx.font = '32px serif';
     ctx.fillStyle = '#ffffff';
-    ctx.fillText('↓', canvas.width / 2, 180);
+    ctx.fillText('⬇', canvas.width / 2, 280);
 
-    // Foreign amount
-    ctx.font = 'bold 32px Arial';
-    ctx.fillStyle = '#34d399'; // emerald-400
-    ctx.fillText(`${currency.symbol}${formatNumber(Number(foreignAmount))}`, canvas.width / 2, 220);
+    // Foreign amount with accent color
+    ctx.font = 'bold 42px serif';
+    ctx.fillStyle = '#34d399';
+    const foreignText = `${currency.symbol}${formatNumber(Number(foreignAmount))}`;
+    ctx.fillText(foreignText, canvas.width / 2, 340);
 
-    // Exchange rate
-    ctx.font = '16px Arial';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.fillText(`Rate: ₦${formatNumber(currency.rate)} per ${currency.symbol}1`, canvas.width / 2, 260);
-
-    // Branding
-    ctx.font = 'bold 20px Arial';
+    // Branding section with elegant styling
+    ctx.font = 'bold 28px serif';
     ctx.fillStyle = '#ffffff';
-    ctx.fillText('by NairaRate', canvas.width / 2, 320);
+    ctx.fillText('NairaRate', canvas.width / 2, 400);
 
-    // Timestamp
-    ctx.font = '14px Arial';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    const now = new Date().toLocaleString();
-    ctx.fillText(`Generated on ${now}`, canvas.width / 2, 350);
+    // Timestamp with smaller elegant font
+    ctx.font = '16px serif';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    const now = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    ctx.fillText(`Generated on ${now}`, canvas.width / 2, 440);
 
-    // Download
-    canvas.toBlob((blob) => {
+    setPreviewCanvas(canvas);
+    setShowPreview(true);
+  };
+
+  const downloadCard = () => {
+    if (!previewCanvas) return;
+    
+    previewCanvas.toBlob((blob) => {
       if (blob) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -142,6 +183,7 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         toast.success("Conversion card downloaded successfully!");
+        setShowPreview(false);
       }
     });
   };
@@ -212,23 +254,68 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
             </div>
           </div>
 
-          <div className="p-3 bg-gradient-glass rounded-lg border border-border/30">
-            <p className="text-center text-sm text-muted-foreground">
-              Exchange Rate: ₦{formatNumber(currency.rate)} per {currency.symbol}1 {currency.code}
-            </p>
-          </div>
-
           {nairaAmount && foreignAmount && (
             <Button
-              onClick={generateConversionCard}
+              onClick={generatePreview}
               className="w-full bg-gradient-primary hover:bg-gradient-secondary text-white font-semibold py-3 rounded-lg transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-glow"
             >
-              <Download className="w-5 h-5 mr-2" />
-              Download Conversion Card
+              <Eye className="w-5 h-5 mr-2" />
+              Preview Conversion Card
             </Button>
           )}
         </div>
       </DialogContent>
+
+      {/* Preview Modal */}
+      <Dialog open={showPreview} onOpenChange={setShowPreview}>
+        <DialogContent className="bg-gradient-card backdrop-blur-xl border-border/50 shadow-2xl max-w-4xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between text-xl font-bold">
+              <span className="flex items-center gap-3">
+                <Eye className="w-6 h-6 text-primary" />
+                Conversion Card Preview
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowPreview(false)}
+                className="h-6 w-6 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-6 pt-4">
+            {previewCanvas && (
+              <div className="flex justify-center">
+                <img 
+                  src={previewCanvas.toDataURL()} 
+                  alt="Conversion Card Preview"
+                  className="max-w-full h-auto rounded-lg shadow-2xl border border-border/30"
+                />
+              </div>
+            )}
+            
+            <div className="flex gap-3 justify-center">
+              <Button
+                onClick={downloadCard}
+                className="bg-gradient-primary hover:bg-gradient-secondary text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-glow"
+              >
+                <Download className="w-5 h-5 mr-2" />
+                Download Card
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowPreview(false)}
+                className="bg-gradient-glass backdrop-blur-sm hover:bg-gradient-secondary px-6 py-3"
+              >
+                Close Preview
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 };
