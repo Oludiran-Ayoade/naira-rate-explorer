@@ -38,7 +38,7 @@ export const CurrencyCard = ({
   const getTrendIcon = () => {
     const change = getRateChange();
     if (!change) return <Minus className="w-4 h-4 text-muted-foreground" />;
-    if (change > 0) return <TrendingUp className="w-4 h-4 text-success" />;
+    if (change > 0) return <TrendingUp className="w-4 h-4 text-emerald-600" />;
     return <TrendingDown className="w-4 h-4 text-destructive" />;
   };
 
@@ -51,36 +51,51 @@ export const CurrencyCard = ({
   };
 
   return (
-    <Card className="p-6 bg-gradient-card border-border/50 shadow-card hover:shadow-elevated transition-all duration-300 hover:scale-105 animate-fade-in">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">{flag}</span>
-          <div>
-            <h3 className="font-semibold text-foreground">{currency}</h3>
-            <p className="text-sm text-muted-foreground">{currencyName}</p>
-          </div>
-        </div>
-        {getTrendIcon()}
-      </div>
+    <Card className="group relative p-6 bg-gradient-card backdrop-blur-md border-border/50 shadow-lg hover:shadow-glow transition-all duration-500 hover:scale-[1.02] animate-fade-in overflow-hidden">
+      {/* Background shimmer effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent transform -skew-x-12 transition-transform duration-1000 group-hover:translate-x-full opacity-0 group-hover:opacity-100" />
       
-      <div className="space-y-2">
-        <div className="flex items-baseline gap-1">
-          <span className="text-lg font-bold text-primary">₦</span>
-          <span className="text-2xl font-bold text-foreground animate-number-up">
-            {formatRate(displayRate)}
-          </span>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          per {symbol}1 {currency}
-        </p>
-        
-        {getRateChange() && (
-          <div className={`text-sm font-medium ${
-            getRateChange()! > 0 ? 'text-success' : 'text-destructive'
-          }`}>
-            {getRateChange()! > 0 ? '+' : ''}{getRateChange()!.toFixed(2)}%
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="text-2xl animate-float group-hover:animate-glow-pulse">
+              {flag}
+            </div>
+            <div>
+              <h3 className="font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                {currency}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {currencyName}
+              </p>
+            </div>
           </div>
-        )}
+          <div className="p-2 rounded-full bg-gradient-glass backdrop-blur-sm">
+            {getTrendIcon()}
+          </div>
+        </div>
+        
+        <div className="space-y-3">
+          <div className="flex items-baseline gap-1">
+            <span className="text-xl font-bold text-primary">₦</span>
+            <span className="text-3xl font-bold text-foreground animate-number-up tracking-tight">
+              {formatRate(displayRate)}
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground font-medium">
+            per {symbol}1 {currency}
+          </p>
+          
+          {getRateChange() && (
+            <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
+              getRateChange()! > 0 
+                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' 
+                : 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300'
+            }`}>
+              {getRateChange()! > 0 ? '+' : ''}{getRateChange()!.toFixed(2)}%
+            </div>
+          )}
+        </div>
       </div>
     </Card>
   );
