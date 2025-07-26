@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Calculator } from "lucide-react";
 import { useState, useEffect } from "react";
+import { CurrencyConverter } from "./CurrencyConverter";
 
 interface CurrencyCardProps {
   currency: string;
@@ -20,6 +21,7 @@ export const CurrencyCard = ({
   symbol = ""
 }: CurrencyCardProps) => {
   const [displayRate, setDisplayRate] = useState(0);
+  const [showConverter, setShowConverter] = useState(false);
   
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -51,52 +53,74 @@ export const CurrencyCard = ({
   };
 
   return (
-    <Card className="group relative p-6 bg-gradient-card backdrop-blur-md border-border/50 shadow-lg hover:shadow-glow transition-all duration-500 hover:scale-[1.02] animate-fade-in overflow-hidden">
+    <>
+      <Card 
+        className="group relative p-6 bg-gradient-card backdrop-blur-md border-border/50 shadow-lg hover:shadow-glow transition-all duration-500 hover:scale-[1.02] animate-fade-in overflow-hidden cursor-pointer"
+        onClick={() => setShowConverter(true)}
+      >
       {/* Background shimmer effect */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent transform -skew-x-12 transition-transform duration-1000 group-hover:translate-x-full opacity-0 group-hover:opacity-100" />
       
-      <div className="relative z-10">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="text-2xl animate-float group-hover:animate-glow-pulse">
-              {flag}
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="text-2xl animate-float group-hover:animate-glow-pulse">
+                {flag}
+              </div>
+              <div>
+                <h3 className="font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                  {currency}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {currencyName}
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-bold text-foreground group-hover:text-primary transition-colors duration-300">
-                {currency}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {currencyName}
-              </p>
+            <div className="flex gap-2">
+              <div className="p-2 rounded-full bg-gradient-glass backdrop-blur-sm">
+                <Calculator className="w-4 h-4 text-primary" />
+              </div>
+              <div className="p-2 rounded-full bg-gradient-glass backdrop-blur-sm">
+                {getTrendIcon()}
+              </div>
             </div>
           </div>
-          <div className="p-2 rounded-full bg-gradient-glass backdrop-blur-sm">
-            {getTrendIcon()}
-          </div>
-        </div>
         
-        <div className="space-y-3">
-          <div className="flex items-baseline gap-1">
-            <span className="text-xl font-bold text-primary">₦</span>
-            <span className="text-3xl font-bold text-foreground animate-number-up tracking-tight">
-              {formatRate(displayRate)}
-            </span>
-          </div>
-          <p className="text-sm text-muted-foreground font-medium">
-            per {symbol}1 {currency}
-          </p>
-          
-          {getRateChange() && (
-            <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
-              getRateChange()! > 0 
-                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' 
-                : 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300'
-            }`}>
-              {getRateChange()! > 0 ? '+' : ''}{getRateChange()!.toFixed(2)}%
+          <div className="space-y-3">
+            <div className="flex items-baseline gap-1">
+              <span className="text-xl font-bold text-primary">₦</span>
+              <span className="text-3xl font-bold text-foreground animate-number-up tracking-tight">
+                {formatRate(displayRate)}
+              </span>
             </div>
-          )}
+            <p className="text-sm text-muted-foreground font-medium">
+              per {symbol}1 {currency}
+            </p>
+            
+            {getRateChange() && (
+              <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
+                getRateChange()! > 0 
+                  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' 
+                  : 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300'
+              }`}>
+                {getRateChange()! > 0 ? '+' : ''}{getRateChange()!.toFixed(2)}%
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+      
+      <CurrencyConverter
+        isOpen={showConverter}
+        onClose={() => setShowConverter(false)}
+        currency={{
+          code: currency,
+          name: currencyName,
+          flag,
+          rate,
+          symbol
+        }}
+      />
+    </>
   );
 };

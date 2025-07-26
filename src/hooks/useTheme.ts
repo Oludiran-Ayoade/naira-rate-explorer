@@ -9,9 +9,9 @@ export const useTheme = () => {
       if (savedTheme) {
         return savedTheme;
       }
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
     }
-    return 'light';
+    return 'dark'; // Default to dark theme
   });
 
   useEffect(() => {
