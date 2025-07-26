@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, Calculator, Download, Eye, X } from 'lucide-react';
+import { ArrowUpDown, Calculator, Download, Eye } from 'lucide-react';
 import { toast } from 'sonner';
+import html2canvas from 'html2canvas';
 
 interface CurrencyConverterProps {
   isOpen: boolean;
@@ -21,7 +22,7 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
   const [nairaAmount, setNairaAmount] = useState('');
   const [foreignAmount, setForeignAmount] = useState('');
   const [showPreview, setShowPreview] = useState(false);
-  const [previewCanvas, setPreviewCanvas] = useState<HTMLCanvasElement | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const formatNumber = (value: number) => {
     return new Intl.NumberFormat('en-NG', {
@@ -62,126 +63,36 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
       toast.error("Please enter amounts to convert before previewing");
       return;
     }
-
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Business card style dimensions
-    canvas.width = 500;
-    canvas.height = 320;
-
-    // Premium gradient background
-    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    gradient.addColorStop(0, '#064e3b');
-    gradient.addColorStop(0.3, '#059669');
-    gradient.addColorStop(0.7, '#10b981');
-    gradient.addColorStop(1, '#047857');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Elegant geometric pattern overlay
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-    for (let i = 0; i < 30; i++) {
-      const x = Math.random() * canvas.width;
-      const y = Math.random() * canvas.height;
-      const size = Math.random() * 20 + 5;
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(Math.random() * Math.PI);
-      ctx.fillRect(-size/2, -size/2, size, size);
-      ctx.restore();
-    }
-
-    // Main card container with rounded corners effect
-    const cardPadding = 25;
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-    ctx.shadowBlur = 15;
-    ctx.shadowOffsetY = 8;
-    ctx.fillRect(cardPadding, cardPadding, canvas.width - (cardPadding * 2), canvas.height - (cardPadding * 2));
-    ctx.shadowColor = 'transparent';
-
-    // Accent bar on left
-    ctx.fillStyle = '#34d399';
-    ctx.fillRect(cardPadding, cardPadding, 8, canvas.height - (cardPadding * 2));
-
-    // NairaRate logo area
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 22px serif';
-    ctx.textAlign = 'left';
-    ctx.fillText('NairaRate', cardPadding + 25, cardPadding + 35);
-
-    ctx.font = '12px sans-serif';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.fillText('CURRENCY CONVERTER', cardPadding + 25, cardPadding + 55);
-
-    // Currency flag and info in top right
-    ctx.font = 'bold 14px sans-serif';
-    ctx.fillStyle = '#34d399';
-    ctx.textAlign = 'right';
-    ctx.fillText(`${currency.flag} ${currency.code}`, canvas.width - cardPadding - 15, cardPadding + 35);
-
-    // Main conversion section
-    const centerY = canvas.height / 2;
-    
-    // Naira amount
-    ctx.font = 'bold 28px serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.textAlign = 'center';
-    const nairaText = `₦${formatNumber(Number(nairaAmount))}`;
-    ctx.fillText(nairaText, canvas.width / 2, centerY - 20);
-
-    // Equal sign instead of arrow
-    ctx.font = 'bold 20px serif';
-    ctx.fillStyle = '#34d399';
-    ctx.fillText('=', canvas.width / 2, centerY + 10);
-
-    // Foreign amount
-    ctx.font = 'bold 28px serif';
-    ctx.fillStyle = '#10b981';
-    const foreignText = `${currency.symbol}${formatNumber(Number(foreignAmount))}`;
-    ctx.fillText(foreignText, canvas.width / 2, centerY + 40);
-
-    // Bottom section with timestamp
-    ctx.font = '10px sans-serif';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    ctx.textAlign = 'center';
-    const now = new Date().toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-    ctx.fillText(`Generated ${now}`, canvas.width / 2, canvas.height - cardPadding - 10);
-
-    // Decorative corner elements
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-    ctx.fillRect(canvas.width - cardPadding - 30, cardPadding, 30, 5);
-    ctx.fillRect(canvas.width - cardPadding - 5, cardPadding, 5, 30);
-
-    setPreviewCanvas(canvas);
     setShowPreview(true);
   };
 
-  const downloadCard = () => {
-    if (!previewCanvas) return;
+  const downloadCard = async () => {
+    if (!cardRef.current) return;
     
-    previewCanvas.toBlob((blob) => {
-      if (blob) {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `nairarate-conversion-${currency.code}-${Date.now()}.png`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        toast.success("Conversion card downloaded successfully!");
-        setShowPreview(false);
-      }
-    });
+    try {
+      const canvas = await html2canvas(cardRef.current, {
+        backgroundColor: null,
+        scale: 2,
+        useCORS: true,
+      });
+      
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `nairarate-conversion-${currency.code}-${Date.now()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          toast.success("Conversion card downloaded successfully!");
+          setShowPreview(false);
+        }
+      });
+    } catch (error) {
+      toast.error("Failed to generate card");
+    }
   };
 
   return (
@@ -264,34 +175,67 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
 
       {/* Preview Modal */}
       <Dialog open={showPreview} onOpenChange={setShowPreview}>
-        <DialogContent className="bg-gradient-card backdrop-blur-xl border-border/50 shadow-2xl max-w-4xl">
+        <DialogContent className="bg-gradient-card backdrop-blur-xl border-border/50 shadow-2xl max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="flex items-center justify-between text-xl font-bold">
-              <span className="flex items-center gap-3">
-                <Eye className="w-6 h-6 text-primary" />
-                Conversion Card Preview
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowPreview(false)}
-                className="h-6 w-6 p-0"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+            <DialogTitle className="flex items-center gap-3 text-xl font-bold">
+              <Eye className="w-6 h-6 text-primary" />
+              Conversion Card Preview
             </DialogTitle>
           </DialogHeader>
           
           <div className="space-y-6 pt-4">
-            {previewCanvas && (
-              <div className="flex justify-center">
-                <img 
-                  src={previewCanvas.toDataURL()} 
-                  alt="Conversion Card Preview"
-                  className="max-w-full h-auto rounded-lg shadow-2xl border border-border/30"
-                />
+            <div className="flex justify-center">
+              <div 
+                ref={cardRef}
+                className="w-96 h-60 bg-gradient-to-br from-emerald-800 via-emerald-600 to-emerald-900 rounded-2xl shadow-2xl p-6 text-white relative overflow-hidden"
+              >
+                {/* Decorative geometric pattern */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute top-4 right-4 w-8 h-8 border-2 border-white/30 rotate-45"></div>
+                  <div className="absolute top-8 right-8 w-4 h-4 bg-white/20 rotate-12"></div>
+                  <div className="absolute bottom-8 left-4 w-6 h-6 border border-white/20 rounded-full"></div>
+                </div>
+                
+                {/* Accent border */}
+                <div className="absolute left-0 top-0 w-2 h-full bg-gradient-to-b from-emerald-300 to-emerald-500 rounded-l-2xl"></div>
+                
+                {/* Header */}
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <h3 className="text-xl font-bold tracking-wide">NairaRate</h3>
+                    <p className="text-emerald-200 text-xs font-medium">CURRENCY CONVERTER</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-2xl">{currency.flag}</span>
+                    <p className="text-emerald-300 text-sm font-semibold">{currency.code}</p>
+                  </div>
+                </div>
+                
+                {/* Conversion amounts */}
+                <div className="text-center space-y-2">
+                  <div className="text-2xl font-bold text-white">
+                    ₦{formatNumber(Number(nairaAmount))}
+                  </div>
+                  <div className="text-emerald-300 text-lg font-medium">=</div>
+                  <div className="text-2xl font-bold text-emerald-200">
+                    {currency.symbol}{formatNumber(Number(foreignAmount))}
+                  </div>
+                </div>
+                
+                {/* Footer */}
+                <div className="absolute bottom-4 left-6 right-6 text-center">
+                  <p className="text-emerald-200/70 text-xs">
+                    Generated {new Date().toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </p>
+                </div>
               </div>
-            )}
+            </div>
             
             <div className="flex gap-3 justify-center">
               <Button
