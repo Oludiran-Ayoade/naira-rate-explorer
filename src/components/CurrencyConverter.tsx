@@ -67,103 +67,99 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Enhanced card dimensions for better proportions
-    canvas.width = 800;
-    canvas.height = 500;
+    // Business card style dimensions
+    canvas.width = 500;
+    canvas.height = 320;
 
     // Premium gradient background
-    const gradient = ctx.createRadialGradient(
-      canvas.width / 2, canvas.height / 2, 0,
-      canvas.width / 2, canvas.height / 2, canvas.width / 2
-    );
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
     gradient.addColorStop(0, '#064e3b');
-    gradient.addColorStop(0.4, '#065f46');
-    gradient.addColorStop(0.8, '#047857');
-    gradient.addColorStop(1, '#022c22');
+    gradient.addColorStop(0.3, '#059669');
+    gradient.addColorStop(0.7, '#10b981');
+    gradient.addColorStop(1, '#047857');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Decorative elements - top corner pattern
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
-    for (let i = 0; i < 50; i++) {
-      ctx.beginPath();
-      ctx.arc(Math.random() * canvas.width, Math.random() * 100, Math.random() * 3, 0, Math.PI * 2);
-      ctx.fill();
+    // Elegant geometric pattern overlay
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+    for (let i = 0; i < 30; i++) {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+      const size = Math.random() * 20 + 5;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(Math.random() * Math.PI);
+      ctx.fillRect(-size/2, -size/2, size, size);
+      ctx.restore();
     }
 
-    // Glass morphism card overlay
-    const cardPadding = 40;
-    const cardX = cardPadding;
-    const cardY = cardPadding;
-    const cardWidth = canvas.width - (cardPadding * 2);
-    const cardHeight = canvas.height - (cardPadding * 2);
+    // Main card container with rounded corners effect
+    const cardPadding = 25;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+    ctx.shadowBlur = 15;
+    ctx.shadowOffsetY = 8;
+    ctx.fillRect(cardPadding, cardPadding, canvas.width - (cardPadding * 2), canvas.height - (cardPadding * 2));
+    ctx.shadowColor = 'transparent';
 
-    // Card background with rounded corners effect
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-    ctx.fillRect(cardX, cardY, cardWidth, cardHeight);
-
-    // Card border with gradient
-    ctx.strokeStyle = '#10b981';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(cardX, cardY, cardWidth, cardHeight);
-
-    // Inner glow effect
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(cardX + 2, cardY + 2, cardWidth - 4, cardHeight - 4);
-
-    // Header section
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 36px serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('CURRENCY CONVERSION', canvas.width / 2, 120);
-
-    // Subtitle with elegant styling
-    ctx.font = '20px serif';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-    ctx.fillText(`${currency.flag} ${currency.name}`, canvas.width / 2, 150);
-
-    // Decorative line
-    ctx.strokeStyle = '#10b981';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(canvas.width / 2 - 100, 170);
-    ctx.lineTo(canvas.width / 2 + 100, 170);
-    ctx.stroke();
-
-    // Amount display with beautiful typography
-    ctx.font = 'bold 42px serif';
-    ctx.fillStyle = '#10b981';
-    const nairaText = `₦${formatNumber(Number(nairaAmount))}`;
-    ctx.fillText(nairaText, canvas.width / 2, 240);
-
-    // Conversion arrow with styling
-    ctx.font = '32px serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText('⬇', canvas.width / 2, 280);
-
-    // Foreign amount with accent color
-    ctx.font = 'bold 42px serif';
+    // Accent bar on left
     ctx.fillStyle = '#34d399';
-    const foreignText = `${currency.symbol}${formatNumber(Number(foreignAmount))}`;
-    ctx.fillText(foreignText, canvas.width / 2, 340);
+    ctx.fillRect(cardPadding, cardPadding, 8, canvas.height - (cardPadding * 2));
 
-    // Branding section with elegant styling
+    // NairaRate logo area
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 22px serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('NairaRate', cardPadding + 25, cardPadding + 35);
+
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.fillText('CURRENCY CONVERTER', cardPadding + 25, cardPadding + 55);
+
+    // Currency flag and info in top right
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillStyle = '#34d399';
+    ctx.textAlign = 'right';
+    ctx.fillText(`${currency.flag} ${currency.code}`, canvas.width - cardPadding - 15, cardPadding + 35);
+
+    // Main conversion section
+    const centerY = canvas.height / 2;
+    
+    // Naira amount
     ctx.font = 'bold 28px serif';
     ctx.fillStyle = '#ffffff';
-    ctx.fillText('NairaRate', canvas.width / 2, 400);
+    ctx.textAlign = 'center';
+    const nairaText = `₦${formatNumber(Number(nairaAmount))}`;
+    ctx.fillText(nairaText, canvas.width / 2, centerY - 20);
 
-    // Timestamp with smaller elegant font
-    ctx.font = '16px serif';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    // Equal sign instead of arrow
+    ctx.font = 'bold 20px serif';
+    ctx.fillStyle = '#34d399';
+    ctx.fillText('=', canvas.width / 2, centerY + 10);
+
+    // Foreign amount
+    ctx.font = 'bold 28px serif';
+    ctx.fillStyle = '#10b981';
+    const foreignText = `${currency.symbol}${formatNumber(Number(foreignAmount))}`;
+    ctx.fillText(foreignText, canvas.width / 2, centerY + 40);
+
+    // Bottom section with timestamp
+    ctx.font = '10px sans-serif';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.textAlign = 'center';
     const now = new Date().toLocaleDateString('en-US', {
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     });
-    ctx.fillText(`Generated on ${now}`, canvas.width / 2, 440);
+    ctx.fillText(`Generated ${now}`, canvas.width / 2, canvas.height - cardPadding - 10);
+
+    // Decorative corner elements
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.fillRect(canvas.width - cardPadding - 30, cardPadding, 30, 5);
+    ctx.fillRect(canvas.width - cardPadding - 5, cardPadding, 5, 30);
 
     setPreviewCanvas(canvas);
     setShowPreview(true);
