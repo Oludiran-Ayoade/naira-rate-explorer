@@ -97,14 +97,13 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center gap-2 text-2xl font-bold text-foreground">
-              <span className="text-primary">₦</span>
-              Naira Rate Explorer
+              <span className="text-primary">₦</span>aira Rate Explorer
             </div>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Real-time currency exchange data powered by 
               <span className="font-semibold text-primary"> ExchangeRate-API</span>
               <br />
-              Updates every 5 minutes • Built with precision and care in Nigeria 🇳🇬
+              Updates every 5 minutes • Built by Oludiran-Ayoade
             </p>
             <div className="flex items-center justify-center gap-4 pt-4">
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>

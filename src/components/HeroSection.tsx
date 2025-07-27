@@ -54,7 +54,7 @@ export const HeroSection = ({ majorRates, lastUpdated, onRefresh, isLoading }: H
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Discover real-time exchange rates for Nigerian Naira against world currencies. 
             <br className="hidden md:block" />
-            Powered by professional-grade APIs with lightning-fast updates.
+            {/* Powered by professional-grade APIs with lightning-fast updates. */}
           </p>
         </div>
 
