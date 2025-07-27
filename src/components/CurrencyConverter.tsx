@@ -269,10 +269,10 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
             className="absolute inset-0 w-full h-full z-0 opacity-20 pointer-events-none"
           />
           <div className="relative space-y-6 z-10">
-            <div className="flex justify-center">
+            <div className="flex justify-center px-4">
               <div 
                 ref={cardRef}
-                className="w-[28rem] h-80 bg-gradient-to-br from-emerald-900 via-green-900 to-gray-900 rounded-3xl shadow-2xl p-8 text-white relative overflow-hidden border border-emerald-500/20 font-['Raleway']"
+                className="w-full max-w-[28rem] h-80 bg-gradient-to-br from-emerald-900 via-green-900 to-gray-900 rounded-3xl shadow-2xl p-6 md:p-8 text-white relative overflow-hidden border border-emerald-500/20 font-['Raleway']"
               >
                 {/* Animated floating particles */}
                 <div className="absolute inset-0 overflow-hidden">
@@ -299,35 +299,37 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
                 {/* Card content */}
                 <div className="relative h-full flex flex-col">
                   {/* Header */}
-                  <div className="flex justify-between items-start mb-8">
+                  <div className="flex justify-between items-start mb-6 md:mb-8">
                     <div>
-                      <h3 className="text-3xl font-bold tracking-tight">NairaRate</h3>
+                      <h3 className="text-2xl md:text-3xl font-bold tracking-tight">NairaRate</h3>
                       <p className="text-emerald-300 text-xs font-medium uppercase tracking-widest">Premium Conversion</p>
                     </div>
                     <div className="text-right">
-                      <span className="text-4xl">{currency.flag}</span>
-                      <p className="text-emerald-300 text-sm font-semibold mt-2">{currency.name} ({currency.code})</p>
+                      <span className="text-3xl md:text-4xl">{currency.flag}</span>
+                      <p className="text-emerald-300 text-xs md:text-sm font-semibold mt-1 md:mt-2">
+                        {currency.name} ({currency.code})
+                      </p>
                     </div>
                   </div>
                   
                   {/* Conversion amounts */}
-                  <div className="flex-1 flex flex-col justify-center items-center space-y-4">
-                    <div className="text-5xl font-bold text-white">
+                  <div className="flex-1 flex flex-col justify-center items-center space-y-3 md:space-y-4">
+                    <div className="text-3xl md:text-5xl font-bold text-white">
                       ₦{formatNumber(Number(nairaAmount))}
                     </div>
-                    <div className="w-32 h-1.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent rounded-full opacity-80"></div>
-                    <div className="text-5xl font-bold text-emerald-300">
+                    <div className="w-24 md:w-32 h-1 md:h-1.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent rounded-full opacity-80"></div>
+                    <div className="text-3xl md:text-5xl font-bold text-emerald-300">
                       {currency.symbol}{formatNumber(Number(foreignAmount))}
                     </div>
                   </div>
                   
                   {/* Footer */}
-                  <div className="mt-auto pt-5 border-t border-white/10">
+                  <div className="mt-auto pt-4 md:pt-5 border-t border-white/10">
                     <div className="flex justify-between items-center">
-                      <p className="text-xs text-emerald-200/70">
+                      <p className="text-[0.65rem] md:text-xs text-emerald-200/70">
                         Rate: ₦{currency.rate.toFixed(2)} = {currency.symbol}1
                       </p>
-                      <p className="text-xs text-emerald-200/70">
+                      <p className="text-[0.65rem] md:text-xs text-emerald-200/70">
                         {new Date().toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
@@ -343,18 +345,18 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
             </div>
             
             {/* Action Buttons */}
-            <div className="flex gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
               <Button
                 onClick={downloadCard}
-                className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                className="px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
-                <Download className="w-5 h-5 mr-2" />
+                <Download className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Download Card
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setShowPreview(false)}
-                className="px-8 py-4 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 font-medium rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+                className="px-6 py-3 sm:px-8 sm:py-4 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 font-medium rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
               >
                 Close Preview
               </Button>
