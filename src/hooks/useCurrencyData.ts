@@ -84,8 +84,7 @@ export const useCurrencyData = () => {
       setIsLoading(true);
       
       // Using a free tier API - ExchangeRate-API
-      const response = await fetch('https://api.exchangerate-api.com/v4/latest/NGN');
-      
+      const response = await fetch('https://api.exchangerate-api.com/v4/latest/NGN');     
       if (!response.ok) {
         throw new Error('Failed to fetch currency data');
       }
@@ -123,6 +122,8 @@ export const useCurrencyData = () => {
         });
       
       setCurrencies(processedCurrencies);
+      console.log(processedCurrencies);
+      
       setLastUpdated(new Date().toLocaleTimeString());
       
       toast({

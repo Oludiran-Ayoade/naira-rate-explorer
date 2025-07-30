@@ -114,12 +114,27 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
     }
   };
 
+  // When the Currency amount is swapped
   const swapAmounts = () => {
-    const tempNaira = nairaAmount;
-    const tempForeign = foreignAmount;
-    setNairaAmount(tempForeign);
-    setForeignAmount(tempNaira);
-  };
+  // Store the current values
+  const currentNaira = nairaAmount;
+  const currentForeign = foreignAmount;
+  
+  // Clear the inputs temporarily to avoid interference
+  setNairaAmount('');
+  setForeignAmount('');
+  
+  // Now convert the foreign amount to naira and vice versa
+  if (currentForeign && !isNaN(Number(currentForeign))) {
+    const newNaira = Number(currentForeign) * currency.rate;
+    setNairaAmount(newNaira.toFixed(2));
+  }
+  
+  if (currentNaira && !isNaN(Number(currentNaira))) {
+    const newForeign = Number(currentNaira) / currency.rate;
+    setForeignAmount(newForeign.toFixed(2));
+  }
+};
 
   const generatePreview = () => {
     if (!nairaAmount || !foreignAmount) {
