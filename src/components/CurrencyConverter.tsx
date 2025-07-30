@@ -308,7 +308,7 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
                   ))}
                 </div>
                 
-                {/* Glossy overlay */}
+                {/* Glossy overlay. */}
                 <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
                 
                 {/* Card content */}

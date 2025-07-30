@@ -16,7 +16,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background transition-colors duration-300">
-      {/* Fixed theme toggle */}
+      {/* Fixed theme toggle... */}
       <div className="fixed top-6 right-6 z-50">
         <ThemeToggle />
       </div>
