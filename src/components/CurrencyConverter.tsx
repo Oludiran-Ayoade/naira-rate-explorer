@@ -316,7 +316,7 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
                   {/* Header */}
                   <div className="flex justify-between items-start mb-6 md:mb-8">
                     <div>
-                      <h3 className="text-2xl md:text-3xl font-bold tracking-tight">NairaRate</h3>
+                      <h3 className="text-2xl md:text-3xl font-bold tracking-tight">NairaRate.ng</h3>
                       <p className="text-emerald-300 text-xs font-medium uppercase tracking-widest">Premium Conversion</p>
                     </div>
                     <div className="text-right">

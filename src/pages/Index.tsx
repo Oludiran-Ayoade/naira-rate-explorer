@@ -93,27 +93,45 @@ const Index = () => {
         </div>
       </section>
       
-      <footer className="relative border-t border-border/50 bg-gradient-glass backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2 text-2xl font-bold text-foreground">
-              <span className="text-primary">₦aira Rate Explorer</span>
-            </div>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Real-time currency exchange data powered by 
-              <span className="font-semibold text-primary"> ExchangeRate-API</span>
-              <br />
-                • Built by Oludiran-Ayoade
-            </p>
-            <div className="flex items-center justify-center gap-4 pt-4">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-muted-foreground font-medium">
-                Live Data Stream Active
-              </span>
-            </div>
-          </div>
-        </div>
-      </footer>
+   <footer className="relative border-t border-border/50 bg-gradient-glass backdrop-blur-xl">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="text-center space-y-4">
+      <div className="flex items-center justify-center gap-2 text-2xl font-bold text-foreground">
+        <span className="text-primary">₦aira Rate Explorer</span>
+      </div>
+      <p className="text-muted-foreground max-w-2xl mx-auto">
+        Your trusted source for accurate currency exchange rates and financial information powered by
+        <span className="font-semibold text-primary"> ExchangeRate-API</span>
+        <br />
+      </p>
+      
+      <div className="flex items-center justify-center gap-2 pt-4">
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          width="16" 
+          height="16" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="2" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+          className="text-muted-foreground"
+        >
+          <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+        </svg>
+        <span className="text-sm text-muted-foreground font-medium">Contact Us:</span>
+        <a 
+          href="mailto:nairar8te@gmail.com" 
+          className="text-sm text-primary font-medium hover:underline transition-colors"
+        >
+          Nairar8te@gmail.com
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
     </div>
   );
 };
