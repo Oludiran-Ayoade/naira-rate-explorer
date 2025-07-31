@@ -287,7 +287,7 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
             <div className="flex justify-center px-4">
               <div 
                 ref={cardRef}
-                className="w-full max-w-[28rem] h-80 bg-gradient-to-br from-emerald-900 via-green-900 to-gray-900 rounded-3xl shadow-2xl p-6 md:p-8 text-white relative overflow-hidden border border-emerald-500/20 font-['Raleway']"
+                className= "w-full max-w-[28rem] h-80 bg-gradient-to-br from-emerald-900 via-green-900 to-gray-900 rounded-3xl shadow-2xl p-6 md:p-8 text-white relative overflow-hidden border border-emerald-500/20 font-['Raleway'] font-sans"
               >
                 {/* Animated floating particles */}
                 <div className="absolute inset-0 overflow-hidden">

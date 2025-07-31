@@ -45,7 +45,7 @@ export const HeroSection = ({ majorRates, lastUpdated, onRefresh, isLoading }: H
           
           <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 tracking-tight">
             <span className="bg-gradient-primary bg-clip-text text-transparent">
-              ₦aira Rate
+              ₦airaRate
             </span>
             <br />
             <span className="text-foreground">Explorer</span>

@@ -101,7 +101,7 @@ const Index = () => {
       </div>
       <p className="text-muted-foreground max-w-2xl mx-auto">
         Your trusted source for accurate currency exchange rates and financial information powered by
-        <span className="font-semibold text-primary">ExchangeRate-API</span>
+        <span className="font-semibold text-primary"> ExchangeRate-API</span>
         <br />
       </p>
       
@@ -125,8 +125,7 @@ const Index = () => {
         <a 
           href="mailto:nairar8te@gmail.com" 
           className="text-sm text-primary font-medium hover:underline transition-colors"
-        >
-          Nairar8te@gmail.com
+        >Nairar8te@gmail.com
         </a>
       </div>
     </div>
