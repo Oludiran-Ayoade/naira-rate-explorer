@@ -52,9 +52,9 @@ export const CurrencyCard = ({
   const formatRate = (value: number) => {
     return new Intl.NumberFormat('en-NG', {
       style: 'decimal',
-      minimumFractionDigits: 2,
+      minimumFractionDigits: 0,
       maximumFractionDigits: 2,
-    }).format(value);
+    }).format(value).replace(/\.00$/, '');
   };
 
   return (
@@ -100,8 +100,8 @@ export const CurrencyCard = ({
 
             {/* Black Market Rates - Single Line */}
             {showBlackMarket && (
-              <div className="flex items-baseline gap-2 mt-2 mb-1 text-[0.65rem] font-['Raleway']">
-                <span className="flex items-center gap-2 mt-2 mb-1 text-[0.65rem] font-semibold font-['Raleway'] text-muted-foreground">BlackMarket:</span>
+              <div className="flex items-baseline gap-2 mt-2 mb-1 text-[0.76rem] font-['Raleway']">
+                <span className="flex items-center gap-2 mt-2 mb-1 text-[0.76rem] font-semibold font-['Raleway'] text-muted-foreground">BlackMarket:</span>
                 <span className="text-green-400 drop-shadow-[0_0_4px_rgba(74,222,128,0.8)] font-semibold animate-pulse">Buy:₦{formatRate(blackMarketRates[currency].buy)}</span>
                 <span className="text-red-400 drop-shadow-[0_0_4px_rgba(248,113,113,0.8)] font-semibold animate-pulse">Sell:₦{formatRate(blackMarketRates[currency].sell)}</span>
               </div>

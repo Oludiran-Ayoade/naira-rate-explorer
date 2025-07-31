@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { RefreshCw, Clock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { blackMarketRates } from "./blackMarketRates";
 
 interface HeroSectionProps {
   majorRates: Array<{
@@ -21,6 +22,14 @@ export const HeroSection = ({ majorRates, lastUpdated, onRefresh, isLoading }: H
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(value);
+  };
+
+  const formatBlackMarketRate = (value: number) => {
+    return new Intl.NumberFormat('en-NG', {
+      style: 'decimal',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(value).replace(/\.00$/, '');
   };
 
   return (
@@ -54,42 +63,62 @@ export const HeroSection = ({ majorRates, lastUpdated, onRefresh, isLoading }: H
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Get real-time exchange rates for Nigerian Naira against world currencies. 
             <br className="hidden md:block" />
-            {/* Powered by professional-grade APIs with lightning-fast updates.... */}
           </p>
         </div>
 
         {/* Major currency cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          {majorRates.map((rate, index) => (
-            <Card 
-              key={rate.currency} 
-              className="group relative p-8 bg-gradient-card backdrop-blur-xl border-border/50 shadow-xl hover:shadow-glow transition-all duration-700 hover:scale-105 animate-slide-up overflow-hidden"
-              style={{ animationDelay: `${index * 200}ms` }}
-            >
-              {/* Shimmer effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent transform -skew-x-12 transition-transform duration-1000 group-hover:translate-x-full opacity-0 group-hover:opacity-100" />
-              
-              <div className="relative z-10 text-center">
-                <div className="text-6xl mb-6 animate-float group-hover:animate-glow-pulse">
-                  {rate.flag}
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
-                    {rate.currency}
-                  </h3>
-                  <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-3xl font-bold text-primary">₦</span>
-                    <span className="text-4xl font-bold text-foreground tracking-tight">
-                      {formatRate(rate.rate)}
-                    </span>
+          {majorRates.map((rate, index) => {
+            const showBlackMarket = ['USD', 'GBP', 'EUR'].includes(rate.currency);
+            const blackMarketData = blackMarketRates[rate.currency];
+            
+            return (
+              <Card 
+                key={rate.currency} 
+                className="group relative p-8 bg-gradient-card backdrop-blur-xl border-border/50 shadow-xl hover:shadow-glow transition-all duration-700 hover:scale-105 animate-slide-up overflow-hidden"
+                style={{ animationDelay: `${index * 200}ms` }}
+              >
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent transform -skew-x-12 transition-transform duration-1000 group-hover:translate-x-full opacity-0 group-hover:opacity-100" />
+                
+                <div className="relative z-10 text-center">
+                  <div className="text-6xl mb-6 animate-float group-hover:animate-glow-pulse">
+                    {rate.flag}
                   </div>
-                  <p className="text-sm font-medium text-muted-foreground bg-gradient-glass backdrop-blur-sm px-3 py-1 rounded-full inline-block">
-                    per {rate.symbol}1 {rate.currency}
-                  </p>
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                      {rate.currency}
+                    </h3>
+                    <div className="flex items-baseline justify-center gap-2">
+                      <span className="text-3xl font-bold text-primary">₦</span>
+                      <span className="text-4xl font-bold text-foreground tracking-tight">
+                        {formatRate(rate.rate)}
+                      </span>
+                    </div>
+                    
+                    {/* Black Market Rates */}
+                    {showBlackMarket && blackMarketData && (
+                      <div className="flex flex-col items-center gap-1 text-xs font-['Raleway']">
+                        <span className="text-muted-foreground/80 font-semibold">BlackMarket</span>
+                        <div className="flex justify-center gap-4 font-semibold">
+                          <span className="text-green-400 drop-shadow-[0_0_4px_rgba(74,222,128,0.8)]">
+                            Buy:₦{formatBlackMarketRate(blackMarketData.buy)}
+                          </span>
+                          <span className="text-red-400 drop-shadow-[0_0_4px_rgba(248,113,113,0.8)]">
+                            Sell:₦{formatBlackMarketRate(blackMarketData.sell)}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <p className="text-sm font-medium text-muted-foreground bg-gradient-glass backdrop-blur-sm px-3 py-1 rounded-full inline-block">
+                      per {rate.symbol}1 {rate.currency}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
 
         {/* Action buttons */}
