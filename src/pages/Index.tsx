@@ -97,11 +97,11 @@ const Index = () => {
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div className="text-center space-y-4">
       <div className="flex items-center justify-center gap-2 text-2xl font-bold text-foreground">
-        <span className="text-primary">₦aira Rate Explorer</span>
+        <span className="text-primary">₦airaRate Explorer</span>
       </div>
       <p className="text-muted-foreground max-w-2xl mx-auto">
         Your trusted source for accurate currency exchange rates and financial information powered by
-        <span className="font-semibold text-primary"> ExchangeRate-API</span>
+        <span className="font-semibold text-primary">ExchangeRate-API</span>
         <br />
       </p>
       
