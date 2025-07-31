@@ -1,7 +1,9 @@
+// src/components/CurrencyCard.tsx
 import { Card } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, Minus, Calculator } from "lucide-react";
 import { useState, useEffect } from "react";
 import { CurrencyConverter } from "./CurrencyConverter";
+import { blackMarketRates } from "./blackMarketRates";
 
 interface CurrencyCardProps {
   currency: string;
@@ -23,6 +25,9 @@ export const CurrencyCard = ({
   const [displayRate, setDisplayRate] = useState(0);
   const [showConverter, setShowConverter] = useState(false);
   
+  const blackMarketCurrencies = ['USD', 'GBP', 'EUR', 'CAD', 'ZAR', 'AED', 'CNY', 'GHS', 'AUD', 'XOF', 'XAF'];
+  const showBlackMarket = blackMarketCurrencies.includes(currency) && blackMarketRates[currency];
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDisplayRate(rate);
@@ -55,14 +60,13 @@ export const CurrencyCard = ({
   return (
     <>
       <Card 
-        className="group relative p-6 bg-gradient-card backdrop-blur-md border-border/50 shadow-lg hover:shadow-glow transition-all duration-500 hover:scale-[1.02] animate-fade-in overflow-hidden cursor-pointer"
-        onClick={() => setShowConverter(true)}
-      >
-      {/* Background shimmer effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent transform -skew-x-12 transition-transform duration-1000 group-hover:translate-x-full opacity-0 group-hover:opacity-100" />
+  className="group relative p-6 bg-gradient-card backdrop-blur-md border-border/50 shadow-lg hover:shadow-glow transition-all duration-500 hover:scale-[1.02] animate-fade-in overflow-hidden cursor-pointer h-[190px] w-full max-w-[55rem]" // ← Change this value
+  onClick={() => setShowConverter(true)}
+>
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent transform -skew-x-12 transition-transform duration-1000 group-hover:translate-x-full opacity-0 group-hover:opacity-100" />
       
-        <div className="relative z-10">
-          <div className="flex items-center justify-between mb-6">
+        <div className="relative z-10 h-full flex flex-col">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="text-2xl animate-float group-hover:animate-glow-pulse">
                 {flag}
@@ -86,19 +90,31 @@ export const CurrencyCard = ({
             </div>
           </div>
         
-          <div className="space-y-3">
+          <div className="flex-grow flex flex-col justify-center">
             <div className="flex items-baseline gap-1">
               <span className="text-xl font-bold text-primary">₦</span>
               <span className="text-3xl font-bold text-foreground animate-number-up tracking-tight">
                 {formatRate(displayRate)}
               </span>
             </div>
-            <p className="text-sm text-muted-foreground font-medium">
+
+            {/* Black Market Rates - Single Line */}
+            {showBlackMarket && (
+              <div className="flex items-center gap-2 mt-2 mb-1 text-[0.65rem] font-semibold font-['Raleway'] text-white">
+                <span className="font-semibold text-muted-foreground">BlackMarket:</span>
+                <span className="font-medium text-muted-foreground text-green-400">Buy:₦{formatRate(blackMarketRates[currency].buy)}</span>
+                <span className="font-medium text-muted-foreground text-red-400">Sell:₦{formatRate(blackMarketRates[currency].sell)}</span>
+              </div>
+            )}
+
+            <p className="text-sm font-medium text-muted-foreground">
               per {symbol}1 {currency}
             </p>
-            
+          </div>
+          
+          <div className="mt-2">
             {getRateChange() && (
-              <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
+              <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
                 getRateChange()! > 0 
                   ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' 
                   : 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300'
