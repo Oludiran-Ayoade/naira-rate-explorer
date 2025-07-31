@@ -33,7 +33,7 @@ const Index = () => {
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 tracking-tight">
               Complete Currency
-              <span className="bg-gradient-primary bg-clip-text text-transparent block">
+              <span className="bg-gradient-primary bg-clip-text text-transparent block pb-2">
                 Exchange Rates
               </span>
             </h2>
@@ -105,7 +105,7 @@ const Index = () => {
         <br />
       </p>
       
-      <div className="flex items-center justify-center gap-2 pt-4">
+      <div className="flex items-center justify-center pt-4">
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
           width="16" 
