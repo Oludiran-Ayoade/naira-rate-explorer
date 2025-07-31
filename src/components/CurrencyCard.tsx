@@ -100,10 +100,10 @@ export const CurrencyCard = ({
 
             {/* Black Market Rates - Single Line */}
             {showBlackMarket && (
-              <div className="flex items-center gap-2 mt-2 mb-1 text-[0.65rem] font-semibold font-['Raleway'] text-white">
-                <span className="font-semibold text-muted-foreground">BlackMarket:</span>
-                <span className="font-medium text-muted-foreground text-green-400">Buy:₦{formatRate(blackMarketRates[currency].buy)}</span>
-                <span className="font-medium text-muted-foreground text-red-400">Sell:₦{formatRate(blackMarketRates[currency].sell)}</span>
+              <div className="flex items-baseline gap-2 mt-2 mb-1 text-[0.65rem] font-['Raleway']">
+                <span className="flex items-center gap-2 mt-2 mb-1 text-[0.65rem] font-semibold font-['Raleway'] text-muted-foreground">BlackMarket:</span>
+                <span className="text-green-400 drop-shadow-[0_0_4px_rgba(74,222,128,0.8)] font-semibold animate-pulse">Buy:₦{formatRate(blackMarketRates[currency].buy)}</span>
+                <span className="text-red-400 drop-shadow-[0_0_4px_rgba(248,113,113,0.8)] font-semibold animate-pulse">Sell:₦{formatRate(blackMarketRates[currency].sell)}</span>
               </div>
             )}
 
