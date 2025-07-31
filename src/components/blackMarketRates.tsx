@@ -14,6 +14,6 @@ export const blackMarketRates: Record<string, BlackMarketRate> = {
   CNY: { buy: 205, sell: 220 },
   GHS: { buy: 120, sell: 135 },
   AUD: { buy: 900, sell: 1000 },
-  XOF: { buy: 2600, sell: 2790 },
-  XAF: { buy: 2410, sell: 2480 }
+  XOF: { buy: 2.60, sell: 2.79 },
+  XAF: { buy: 2.41, sell: 2.48 }
 };
