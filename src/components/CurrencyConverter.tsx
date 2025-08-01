@@ -5,6 +5,10 @@ import { Button } from '@/components/ui/button';
 import { ArrowUpDown, Calculator, Download, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
+import { blackMarketRates } from "./blackMarketRates";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface CurrencyConverterProps {
   isOpen: boolean;
@@ -19,12 +23,87 @@ interface CurrencyConverterProps {
 }
 
 export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConverterProps) => {
-  const [nairaAmount, setNairaAmount] = useState('');
-  const [foreignAmount, setForeignAmount] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const [inputType, setInputType] = useState<'naira' | 'foreign'>('naira');
   const [showPreview, setShowPreview] = useState(false);
+  const [useBlackMarket, setUseBlackMarket] = useState(false);
+  const [rateType, setRateType] = useState<'buy' | 'sell'>('buy');
   const cardRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dialogContentRef = useRef<HTMLDivElement>(null);
+
+  // Get current rate based on selection
+  const currentRate = useBlackMarket && blackMarketRates[currency.code] 
+    ? blackMarketRates[currency.code][rateType] 
+    : currency.rate;
+
+  // Calculate converted amount
+  const convertedAmount = inputValue && !isNaN(Number(inputValue))
+    ? inputType === 'naira'
+      ? (Number(inputValue) / currentRate).toFixed(2)
+      : (Number(inputValue) * currentRate).toFixed(2)
+    : '';
+
+  // Update conversion when rate changes
+  useEffect(() => {
+    if (inputValue) {
+      setInputValue(inputValue); // Force re-render to update converted amount
+    }
+  }, [currentRate]);
+
+  const handleInputChange = (value: string, type: 'naira' | 'foreign') => {
+    setInputValue(value);
+    setInputType(type);
+  };
+
+  const swapAmounts = () => {
+    setInputType(prev => prev === 'naira' ? 'foreign' : 'naira');
+    setInputValue(convertedAmount);
+  };
+
+  const formatNumber = (value: number) => {
+    return new Intl.NumberFormat('en-NG', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  };
+
+  const generatePreview = () => {
+    if (!inputValue) {
+      toast.error("Please enter an amount to convert before previewing");
+      return;
+    }
+    setShowPreview(true);
+  };
+
+  const downloadCard = async () => {
+    if (!cardRef.current) return;
+    
+    try {
+      const canvas = await html2canvas(cardRef.current, {
+        backgroundColor: null,
+        scale: 2,
+        useCORS: true,
+      });
+      
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `nairarate-conversion-${currency.code}-${Date.now()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          toast.success("Conversion card downloaded successfully!");
+          setShowPreview(false);
+        }
+      });
+    } catch (error) {
+      toast.error("Failed to generate card");
+    }
+  };
 
   // Hide close button when dialog opens
   useEffect(() => {
@@ -87,96 +166,10 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
     };
   }, [showPreview]);
 
-  const formatNumber = (value: number) => {
-    return new Intl.NumberFormat('en-NG', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(value);
-  };
-
-  const convertFromNaira = (value: string) => {
-    setNairaAmount(value);
-    if (value && !isNaN(Number(value))) {
-      const foreign = Number(value) / currency.rate;
-      setForeignAmount(foreign.toFixed(2));
-    } else {
-      setForeignAmount('');
-    }
-  };
-
-  const convertFromForeign = (value: string) => {
-    setForeignAmount(value);
-    if (value && !isNaN(Number(value))) {
-      const naira = Number(value) * currency.rate;
-      setNairaAmount(naira.toFixed(2));
-    } else {
-      setNairaAmount('');
-    }
-  };
-
-  // When the Currency amount is swapped
-  const swapAmounts = () => {
-  // Store the current values
-  const currentNaira = nairaAmount;
-  const currentForeign = foreignAmount;
-  
-  // Clear the inputs temporarily to avoid interference
-  setNairaAmount('');
-  setForeignAmount('');
-  
-  // Now convert the foreign amount to naira and vice versa
-  if (currentForeign && !isNaN(Number(currentForeign))) {
-    const newNaira = Number(currentForeign) * currency.rate;
-    setNairaAmount(newNaira.toFixed(2));
-  }
-  
-  if (currentNaira && !isNaN(Number(currentNaira))) {
-    const newForeign = Number(currentNaira) / currency.rate;
-    setForeignAmount(newForeign.toFixed(2));
-  }
-};
-
-  const generatePreview = () => {
-    if (!nairaAmount || !foreignAmount) {
-      toast.error("Please enter amounts to convert before previewing");
-      return;
-    }
-    setShowPreview(true);
-  };
-
-  const downloadCard = async () => {
-    if (!cardRef.current) return;
-    
-    try {
-      const canvas = await html2canvas(cardRef.current, {
-        backgroundColor: null,
-        scale: 2,
-        useCORS: true,
-      });
-      
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `nairarate-conversion-${currency.code}-${Date.now()}.png`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          toast.success("Conversion card downloaded successfully!");
-          setShowPreview(false);
-        }
-      });
-    } catch (error) {
-      toast.error("Failed to generate card");
-    }
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent 
-        className="bg-white dark:bg-gray-900 border-0 rounded-2xl shadow-xl max-w-md p-6 overflow-hidden font-['Poppins']"
+        className="bg-white dark:bg-gray-900 border-0 rounded-2xl shadow-xl max-w-md p-6 overflow-hidden font-['Raleway']"
         ref={dialogContentRef}
       >
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-gray-800 dark:to-gray-950 opacity-30"></div>
@@ -201,7 +194,55 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
             </div>
             <div className="text-right">
               <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Exchange Rate</p>
-              <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">₦{currency.rate.toFixed(2)}</p>
+              <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">₦{currentRate.toFixed(2)}</p>
+              
+              {/* Black Market Toggle */}
+              {/* <div className="flex items-center justify-end gap-2 mt-2">
+                <Switch 
+                  id="black-market-toggle"
+                  checked={useBlackMarket}
+                  onCheckedChange={setUseBlackMarket}
+                  className="data-[state=checked]:bg-emerald-500 scale-75"
+                />
+                <Label htmlFor="black-market-toggle" className="text-xs cursor-pointer">
+                  Black Market
+                </Label>
+              </div> */}
+              {blackMarketRates[currency.code] && (
+                <div className="flex items-center justify-end gap-2 mt-2">
+                  <Switch
+                    id="black-market-toggle"
+                    checked={useBlackMarket}
+                    onCheckedChange={setUseBlackMarket}
+                    className="data-[state=checked]:bg-emerald-500 scale-75"
+                  />
+                  <Label htmlFor="black-market-toggle" className="text-xs cursor-pointer">
+                    Black Market
+                  </Label>
+                </div>
+              )}
+              
+              {/* Buy/Sell Radio Buttons */}
+              {useBlackMarket && blackMarketRates[currency.code] && (
+                <RadioGroup 
+                  value={rateType} 
+                  onValueChange={(value: 'buy' | 'sell') => setRateType(value)}
+                  className="flex gap-4 justify-end mt-1"
+                >
+                  <div className="flex items-center space-x-1">
+                    <RadioGroupItem value="buy" id="buy" className="w-3 h-3" />
+                    <Label htmlFor="buy" className="text-xs cursor-pointer">
+                      Buy: ₦{blackMarketRates[currency.code].buy.toFixed(2)}
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <RadioGroupItem value="sell" id="sell" className="w-3 h-3" />
+                    <Label htmlFor="sell" className="text-xs cursor-pointer">
+                      Sell: ₦{blackMarketRates[currency.code].sell.toFixed(2)}
+                    </Label>
+                  </div>
+                </RadioGroup>
+              )}
             </div>
           </div>
 
@@ -213,14 +254,14 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
                 <Input
                   type="number"
                   placeholder="0.00"
-                  value={nairaAmount}
-                  onChange={(e) => convertFromNaira(e.target.value)}
-                  className="text-xl h-14 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-900 rounded-xl pl-14 pr-4 font-medium"
+                  value={inputType === 'naira' ? inputValue : convertedAmount}
+                  onChange={(e) => handleInputChange(e.target.value, 'naira')}
+                  className="text-xl h-14 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-900 rounded-xl pl-14 pr-4 font-normal"
                 />
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-bold text-gray-700 dark:text-gray-300">₦</span>
-                {nairaAmount && (
-                  <p className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400">
-                    {formatNumber(Number(nairaAmount))}
+                {inputType === 'naira' && inputValue && (
+                  <p className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400 font-normal">
+                    {formatNumber(Number(inputValue))}
                   </p>
                 )}
               </div>
@@ -245,14 +286,14 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
                 <Input
                   type="number"
                   placeholder="0.00"
-                  value={foreignAmount}
-                  onChange={(e) => convertFromForeign(e.target.value)}
-                  className="text-xl h-14 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-900 rounded-xl pl-14 pr-4 font-medium"
+                  value={inputType === 'foreign' ? inputValue : convertedAmount}
+                  onChange={(e) => handleInputChange(e.target.value, 'foreign')}
+                  className="text-xl h-14 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-900 rounded-xl pl-14 pr-4 font-normal"
                 />
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-bold text-gray-700 dark:text-gray-300">{currency.symbol}</span>
-                {foreignAmount && (
-                  <p className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400">
-                    {formatNumber(Number(foreignAmount))}
+                {inputType === 'foreign' && inputValue && (
+                  <p className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400 font-normal">
+                    {formatNumber(Number(inputValue))}
                   </p>
                 )}
               </div>
@@ -260,7 +301,7 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
           </div>
 
           {/* Action Button */}
-          {nairaAmount && foreignAmount && (
+          {inputValue && (
             <Button
               onClick={generatePreview}
               className="w-full h-14 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group"
@@ -287,7 +328,7 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
             <div className="flex justify-center px-4">
               <div 
                 ref={cardRef}
-                className= "w-full max-w-[28rem] h-80 bg-gradient-to-br from-emerald-900 via-green-900 to-gray-900 rounded-3xl shadow-2xl p-6 md:p-8 text-white relative overflow-hidden border border-emerald-500/20 font-['Raleway'] font-sans"
+                className="w-full max-w-[28rem] h-80 bg-gradient-to-br from-emerald-900 via-green-900 to-gray-900 rounded-3xl shadow-2xl p-6 md:p-8 text-white relative overflow-hidden border border-emerald-500/20 font-['Raleway']"
               >
                 {/* Animated floating particles */}
                 <div className="absolute inset-0 overflow-hidden">
@@ -308,7 +349,7 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
                   ))}
                 </div>
                 
-                {/* Glossy overlay. */}
+                {/* Glossy overlay */}
                 <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
                 
                 {/* Card content */}
@@ -317,7 +358,9 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
                   <div className="flex justify-between items-start mb-6 md:mb-8">
                     <div>
                       <h3 className="text-2xl md:text-3xl font-bold tracking-tight">NairaRate.ng</h3>
-                      <p className="text-emerald-300 text-xs font-medium uppercase tracking-widest">Premium Conversion</p>
+                      <p className="text-emerald-300 text-xs font-medium uppercase tracking-widest">
+                        {useBlackMarket ? 'Black Market Conversion' : 'Premium Conversion'}
+                      </p>
                     </div>
                     <div className="text-right">
                       <span className="text-3xl md:text-4xl">{currency.flag}</span>
@@ -329,12 +372,12 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
                   
                   {/* Conversion amounts */}
                   <div className="flex-1 flex flex-col justify-center items-center space-y-3 md:space-y-4">
-                    <div className="text-3xl md:text-5xl font-bold text-white">
-                      ₦{formatNumber(Number(nairaAmount))}
+                    <div className="text-3xl md:text-5xl font-bold text-white font-normal">
+                      ₦{inputType === 'naira' ? formatNumber(Number(inputValue)) : formatNumber(Number(convertedAmount))}
                     </div>
                     <div className="w-24 md:w-32 h-1 md:h-1.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent rounded-full opacity-80"></div>
-                    <div className="text-3xl md:text-5xl font-bold text-emerald-300">
-                      {currency.symbol}{formatNumber(Number(foreignAmount))}
+                    <div className="text-3xl md:text-5xl font-bold text-emerald-300 font-normal">
+                      {inputType === 'foreign' ? formatNumber(Number(inputValue)) : formatNumber(Number(convertedAmount))}{currency.symbol}
                     </div>
                   </div>
                   
@@ -342,7 +385,7 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
                   <div className="mt-auto pt-4 md:pt-5 border-t border-white/10">
                     <div className="flex justify-between items-center">
                       <p className="text-[0.65rem] md:text-xs text-emerald-200/70">
-                        Rate: ₦{currency.rate.toFixed(2)} = {currency.symbol}1
+                        Rate: ₦{currentRate.toFixed(2)} = {currency.symbol}1
                       </p>
                       <p className="text-[0.65rem] md:text-xs text-emerald-200/70">
                         {new Date().toLocaleDateString('en-US', {

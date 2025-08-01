@@ -2,44 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    /* Light Theme - Toned down colors */
+    --background: 153 30% 96%;
     --foreground: 153 80% 8%;
 
-    --card: 0 0% 100%;
+    --card: 153 30% 94%;
     --card-foreground: 153 80% 8%;
 
-    --popover: 0 0% 100%;
+    --popover: 153 30% 94%;
     --popover-foreground: 153 80% 8%;
 
     --primary: 153 80% 20%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 153 30% 95%;
+    --secondary: 153 30% 90%;
     --secondary-foreground: 153 80% 15%;
 
-    --muted: 153 30% 96%;
+    --muted: 153 30% 92%;
     --muted-foreground: 153 20% 45%;
 
-    --accent: 153 40% 88%;
+    --accent: 153 40% 86%;
     --accent-foreground: 153 80% 15%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 153 30% 90%;
-    --input: 153 30% 90%;
+    --border: 153 30% 86%;
+    --input: 153 30% 86%;
     --ring: 153 80% 20%;
 
-    /* Deep Green Design System */
-    --emerald-50: 153 30% 98%;
-    --emerald-100: 153 30% 95%;
-    --emerald-200: 153 30% 88%;
+    /* Adjusted Emerald Scale */
+    --emerald-50: 153 30% 96%;
+    --emerald-100: 153 30% 92%;
+    --emerald-200: 153 30% 85%;
     --emerald-300: 153 40% 78%;
     --emerald-400: 153 50% 65%;
     --emerald-500: 153 60% 50%;
@@ -49,14 +46,14 @@ All colors MUST be HSL.
     --emerald-900: 153 80% 12%;
     --emerald-950: 153 80% 8%;
     
-    /* Nigerian-inspired gradients */
+    /* Adjusted Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(153 80% 20%), hsl(153 70% 30%));
-    --gradient-secondary: linear-gradient(145deg, hsl(153 30% 98%), hsl(153 30% 95%));
-    --gradient-hero: linear-gradient(135deg, hsl(153 80% 20% / 0.05), hsl(153 70% 30% / 0.1));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.9), hsl(153 30% 98% / 0.8));
-    --gradient-glass: linear-gradient(145deg, hsl(0 0% 100% / 0.1), hsl(153 30% 95% / 0.05));
+    --gradient-secondary: linear-gradient(145deg, hsl(153 30% 96%), hsl(153 30% 92%));
+    --gradient-hero: linear-gradient(135deg, hsl(153 80% 20% / 0.05), hsl(153 70% 30% / 0.08));
+    --gradient-card: linear-gradient(145deg, hsl(153 30% 96% / 0.9), hsl(153 30% 94% / 0.8));
+    --gradient-glass: linear-gradient(145deg, hsl(0 0% 100% / 0.1), hsl(153 30% 92% / 0.05));
     
-    /* Advanced shadows */
+    /* Shadows */
     --shadow-sm: 0 1px 2px 0 hsl(153 80% 20% / 0.05);
     --shadow: 0 1px 3px 0 hsl(153 80% 20% / 0.1), 0 1px 2px -1px hsl(153 80% 20% / 0.1);
     --shadow-md: 0 4px 6px -1px hsl(153 80% 20% / 0.1), 0 2px 4px -2px hsl(153 80% 20% / 0.1);
@@ -70,6 +67,7 @@ All colors MUST be HSL.
   }
 
   .dark {
+    /* Dark Theme (unchanged) */
     --background: 153 80% 4%;
     --foreground: 153 30% 95%;
 
@@ -131,4 +129,3 @@ All colors MUST be HSL.
     scroll-behavior: smooth;
   }
 }
-
