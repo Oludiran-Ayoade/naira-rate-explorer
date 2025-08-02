@@ -223,7 +223,7 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
               )}
               
               {/* Buy/Sell Radio Buttons */}
-              {useBlackMarket && blackMarketRates[currency.code] && (
+              {/* {useBlackMarket && blackMarketRates[currency.code] && (
                 <RadioGroup 
                   value={rateType} 
                   onValueChange={(value: 'buy' | 'sell') => setRateType(value)}
@@ -242,6 +242,29 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
                     </Label>
                   </div>
                 </RadioGroup>
+              )} */}
+              {/* Buy/Sell Radio Buttons - Mobile responsive */}
+              {useBlackMarket && blackMarketRates[currency.code] && (
+                <div className="sm:[&>*]:text-xs sm:[&>*]:gap-4"> {/* Original size for tablet/laptop */}
+                  <RadioGroup
+                    value={rateType}
+                    onValueChange={(value: 'buy' | 'sell') => setRateType(value)}
+                    className="flex gap-2 justify-end mt-1"
+                  >
+                    <div className="flex items-center space-x-1">
+                      <RadioGroupItem value="buy" id="buy" className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                      <Label htmlFor="buy" className="text-[0.6rem] cursor-pointer">
+                        Buy: ₦{blackMarketRates[currency.code].buy.toFixed(2)}
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <RadioGroupItem value="sell" id="sell" className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                      <Label htmlFor="sell" className="text-[0.6rem] cursor-pointer">
+                        Sell: ₦{blackMarketRates[currency.code].sell.toFixed(2)}
+                      </Label>
+                    </div>
+                  </RadioGroup>
+                </div>
               )}
             </div>
           </div>
@@ -377,7 +400,7 @@ export const CurrencyConverter = ({ isOpen, onClose, currency }: CurrencyConvert
                     </div>
                     <div className="w-24 md:w-32 h-1 md:h-1.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent rounded-full opacity-80"></div>
                     <div className="text-3xl md:text-5xl font-bold text-emerald-300 font-normal">
-                      {inputType === 'foreign' ? formatNumber(Number(inputValue)) : formatNumber(Number(convertedAmount))}{currency.symbol}
+                      {currency.symbol}{inputType === 'foreign' ? formatNumber(Number(inputValue)) : formatNumber(Number(convertedAmount))}
                     </div>
                   </div>
                   
