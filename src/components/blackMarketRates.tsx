@@ -5,9 +5,9 @@ export interface BlackMarketRate {
 }
 
 export const blackMarketRates: Record<string, BlackMarketRate> = {
-  USD: { buy: 1555, sell: 1565 },
-  GBP: { buy: 2095, sell: 2120 },
-  EUR: { buy: 1770, sell: 1795 },
+  USD: { buy: 1555, sell: 1563 },
+  GBP: { buy: 2090, sell: 2120 },
+  EUR: { buy: 1775, sell: 1800 },
   CAD: { buy: 1150, sell: 1200 },
   ZAR: { buy: 80, sell: 100 },
   AED: { buy: 400, sell: 420 },
