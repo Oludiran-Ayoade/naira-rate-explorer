@@ -27,7 +27,7 @@ export const useCurrencyData = () => {
     EUR: { name: 'Euro', flag: '🇪🇺', symbol: '€' },
     GBP: { name: 'British Pound', flag: '🇬🇧', symbol: '£' },
     JPY: { name: 'Japanese Yen', flag: '🇯🇵', symbol: '¥' },
-    CAD: { name: 'Canadian Dollar', flag: '🇨�', symbol: 'C$' },
+    CAD: { name: 'Canadian Dollar', flag: '🇨🇦', symbol: 'C$' },
     AUD: { name: 'Australian Dollar', flag: '🇦🇺', symbol: 'A$' },
     CHF: { name: 'Swiss Franc', flag: '🇨🇭', symbol: 'Fr' },
     CNY: { name: 'Chinese Yuan', flag: '🇨🇳', symbol: '¥' },
