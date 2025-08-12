@@ -20,16 +20,17 @@ export const useCurrencyData = () => {
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const { toast } = useToast();
 
-  // This object contains metadata for all 161 currencies provided by exchangerate-api.com.
-  // It has been meticulously updated to be as comprehensive as possible.
+  // This object contains metadata for all currencies from exchangerate-api.com
+  // that have a specific country flag. XDR (Special Drawing Rights) has been
+  // removed as it doesn't have a direct country flag and you wished to exclude it.
   const currencyInfo: Record<string, { name: string; flag: string; symbol: string }> = {
-    // Currencies in alphabetical order by code for easier verification
+    // Currencies in alphabetical order by code
     AED: { name: 'UAE Dirham', flag: '🇦🇪', symbol: 'د.إ' },
     AFN: { name: 'Afghan Afghani', flag: '🇦🇫', symbol: '؋' },
     ALL: { name: 'Albanian Lek', flag: '🇦🇱', symbol: 'L' },
     AMD: { name: 'Armenian Dram', flag: '🇦🇲', symbol: '֏' },
     ANG: { name: 'Netherlands Antillean Guilder', flag: '🇦🇼', symbol: 'ƒ' },
-    AOA: { name: 'Angolan Kwanza', flag: '�🇴', symbol: 'Kz' },
+    AOA: { name: 'Angolan Kwanza', flag: '🇦🇴', symbol: 'Kz' },
     ARS: { name: 'Argentine Peso', flag: '🇦🇷', symbol: '$' },
     AUD: { name: 'Australian Dollar', flag: '🇦🇺', symbol: 'A$' },
     AWG: { name: 'Aruban Florin', flag: '🇦🇼', symbol: 'ƒ' },
@@ -47,10 +48,10 @@ export const useCurrencyData = () => {
     BSD: { name: 'Bahamian Dollar', flag: '🇧🇸', symbol: '$' },
     BTN: { name: 'Bhutanese Ngultrum', flag: '🇧🇹', symbol: 'Nu.' },
     BWP: { name: 'Botswana Pula', flag: '🇧🇼', symbol: 'P' },
-    BYN: { name: 'Belarusian Ruble', flag: '🇧🇾', symbol: 'Br' }, // Corrected from BYR
+    BYN: { name: 'Belarusian Ruble', flag: '🇧🇾', symbol: 'Br' },
     BZD: { name: 'Belize Dollar', flag: '🇧🇿', symbol: 'BZ$' },
     CAD: { name: 'Canadian Dollar', flag: '🇨🇦', symbol: 'C$' },
-    CDF: { name: 'Congolese Franc', flag: '🇨🇩', symbol: 'FC' },
+    CDF: { name: 'Congolese Franc', flag: '�🇩', symbol: 'FC' },
     CHF: { name: 'Swiss Franc', flag: '🇨🇭', symbol: 'Fr' },
     CLP: { name: 'Chilean Peso', flag: '🇨🇱', symbol: '$' },
     CNY: { name: 'Chinese Yuan', flag: '🇨🇳', symbol: '¥' },
@@ -81,7 +82,7 @@ export const useCurrencyData = () => {
     GYD: { name: 'Guyanese Dollar', flag: '🇬🇾', symbol: '$' },
     HKD: { name: 'Hong Kong Dollar', flag: '🇭🇰', symbol: 'HK$' },
     HNL: { name: 'Honduran Lempira', flag: '🇭🇳', symbol: 'L' },
-    HRK: { name: 'Croatian Kuna', flag: '🇭🇷', symbol: 'kn' }, // Added HRK
+    HRK: { name: 'Croatian Kuna', flag: '🇭🇷', symbol: 'kn' },
     HTG: { name: 'Haitian Gourde', flag: '🇭🇹', symbol: 'G' },
     HUF: { name: 'Hungarian Forint', flag: '🇭🇺', symbol: 'Ft' },
     IDR: { name: 'Indonesian Rupiah', flag: '🇮🇩', symbol: 'Rp' },
@@ -139,7 +140,7 @@ export const useCurrencyData = () => {
     PLN: { name: 'Polish Zloty', flag: '🇵🇱', symbol: 'zł' },
     PYG: { name: 'Paraguayan Guarani', flag: '🇵🇾', symbol: '₲' },
     QAR: { name: 'Qatari Riyal', flag: '🇶🇦', symbol: '﷼' },
-    RON: { name: 'Romanian Leu', flag: '🇷🇴', symbol: 'lei' }, // Added RON
+    RON: { name: 'Romanian Leu', flag: '🇷🇴', symbol: 'lei' },
     RSD: { name: 'Serbian Dinar', flag: '🇷🇸', symbol: 'дин.' },
     RUB: { name: 'Russian Ruble', flag: '🇷🇺', symbol: '₽' },
     RWF: { name: 'Rwandan Franc', flag: '🇷🇼', symbol: 'Fr' },
@@ -161,10 +162,13 @@ export const useCurrencyData = () => {
     TMT: { name: 'Turkmenistani Manat', flag: '🇹🇲', symbol: 'm' },
     TND: { name: 'Tunisian Dinar', flag: '🇹🇳', symbol: 'د.ت' },
     TOP: { name: 'Tongan Paʻanga', flag: '🇹🇴', symbol: 'T$' },
-    TTD: { name: 'Trinidad and Tobago Dollar', flag: '🇹🇹', symbol: '$' },
     TRY: { name: 'Turkish Lira', flag: '🇹🇷', symbol: '₺' },
+    TTD: { name: 'Trinidad and Tobago Dollar', flag: '🇹🇹', symbol: '$' },
+    TWD: { name: 'New Taiwan Dollar', flag: '🇹🇼', symbol: 'NT$' },
+    TZS: { name: 'Tanzanian Shilling', flag: '🇹🇿', symbol: 'TSh' },
     UAH: { name: 'Ukrainian Hryvnia', flag: '🇺🇦', symbol: '₴' },
     UGX: { name: 'Ugandan Shilling', flag: '🇺🇬', symbol: 'USh' },
+    USD: { name: 'US Dollar', flag: '🇺🇸', symbol: '$' },
     UYU: { name: 'Uruguayan Peso', flag: '🇺🇾', symbol: '$' },
     UZS: { name: 'Uzbekistani Soʻm', flag: '🇺🇿', symbol: 'сўм' },
     VES: { name: 'Venezuelan Bolívar Soberano', flag: '🇻🇪', symbol: 'Bs.' },
@@ -181,10 +185,8 @@ export const useCurrencyData = () => {
     ZWL: { name: 'Zimbabwean Dollar', flag: '🇿🇼', symbol: 'Z$' },
   };
 
-
   const fetchCurrencyData = async () => {
     try {
-      // Set isLoading to true immediately, as we're starting to fetch/process data
       setIsLoading(true);
 
       // --- 1. Attempt to load cached data for instant display ---
@@ -197,15 +199,11 @@ export const useCurrencyData = () => {
         const parsedCachedData = JSON.parse(cachedData);
         const parsedCachedTimestamp = parseInt(cachedTimestamp, 10);
 
-        // Check if cached data is relatively fresh (e.g., within the last 5 minutes)
-        // If it's older, we'll still display it but then immediately fetch new data.
         if (now - parsedCachedTimestamp < cacheFreshnessLimit) {
           setCurrencies(parsedCachedData.currencies);
           setLastUpdated(parsedCachedData.lastUpdated);
-          setIsLoading(false); // Display cached data quickly
-          // No toast here to avoid spamming on quick refreshes
+          setIsLoading(false);
         } else {
-          // Display stale cached data immediately, but still indicate loading for fresh fetch
           setCurrencies(parsedCachedData.currencies);
           setLastUpdated(parsedCachedData.lastUpdated + ' (stale)');
         }
@@ -219,7 +217,8 @@ export const useCurrencyData = () => {
 
       const data = await response.json();
       const rates: CurrencyData = data.rates;
-      const baseCurrencyCode = data.base;
+      // baseCurrencyCode will be 'USD' from the API response
+      const baseCurrencyCode = data.base; 
 
       const ngnRateToUsd = rates['NGN'];
 
@@ -230,12 +229,12 @@ export const useCurrencyData = () => {
 
       const processedCurrencies: Currency[] = Object.entries(rates)
         .map(([code, rateFromUsd]) => {
-          // Exclude NGN and currencies not found in currencyInfo
+          // Exclude NGN and any currency not explicitly found in currencyInfo
           if (code === 'NGN' || !currencyInfo[code]) {
             return null; // Exclude this currency
           }
           
-          const info = currencyInfo[code]; // We know info exists because of the filter above
+          const info = currencyInfo[code]; 
 
           // Calculate the rate as '1 unit of foreign currency = X NGN'
           const rateInNgn = ngnRateToUsd / rateFromUsd;
@@ -269,8 +268,6 @@ export const useCurrencyData = () => {
         variant: "destructive",
       });
     } finally {
-      // Ensure isLoading is set to false after the network request completes,
-      // even if an error occurred.
       setIsLoading(false);
     }
   };
@@ -282,7 +279,7 @@ export const useCurrencyData = () => {
     const interval = setInterval(fetchCurrencyData, 5 * 60 * 1000);
     
     return () => clearInterval(interval);
-  }, []); // Empty dependency array ensures it runs once on mount
+  }, []);
 
   const getMajorCurrencies = () => {
     return currencies
