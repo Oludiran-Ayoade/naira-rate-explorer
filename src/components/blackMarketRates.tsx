@@ -5,15 +5,15 @@ export interface BlackMarketRate {
 }
 
 export const blackMarketRates: Record<string, BlackMarketRate> = {
-  USD: { buy: 1550, sell: 1555 },
-  GBP: { buy: 2085, sell: 2110 },
-  EUR: { buy: 1770, sell: 1790 },
-  CAD: { buy: 1150, sell: 1200 },
-  ZAR: { buy: 80, sell: 100 },
-  AED: { buy: 400, sell: 420 },
-  CNY: { buy: 205, sell: 220 },
-  GHS: { buy: 120, sell: 135 },
-  AUD: { buy: 900, sell: 1000 },
-  XOF: { buy: 2.60, sell: 2.79 },
-  XAF: { buy: 2.41, sell: 2.48 }
+  USD: { buy: 1445, sell: 1450 },
+  GBP: { buy: 1950, sell: 1980 },
+  EUR: { buy: 1665, sell: 1690 },
+  CAD: { buy: 1000, sell: 1100 },
+  ZAR: { buy: 90, sell: 110 },
+  AED: { buy: 385, sell: 410 },
+  CNY: { buy: 190, sell: 210 },
+  GHS: { buy: 90, sell: 115 },
+  AUD: { buy: 800, sell: 900 },
+  XOF: { buy: 2.50, sell: 2.60 },
+  XAF: { buy: 2.40, sell: 2.50 }
 };
